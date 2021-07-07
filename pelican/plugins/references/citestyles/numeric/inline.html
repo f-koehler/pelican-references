@@ -1,0 +1,9 @@
+<!-- prettier-ignore -->
+<sup>
+  [
+  {%- for citekey in citation["citekeys"] -%}
+    {%- set number = reference_numbers[citekey] -%}
+    <a href="#reference{{ number }}">{{ number }}</a>{{ ", " if not loop.last else "" }}
+  {%- endfor -%}
+  ]
+</sup>

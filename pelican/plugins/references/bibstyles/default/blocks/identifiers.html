@@ -15,7 +15,7 @@
 entry["URL"].startswith("https://arxiv.org/abs/") %}
 <span
     >arXiv:
-    <a href="entry['URL']"
+    <a href="{{ entry['URL'] }}"
         >{{ entry["URL"]|replace("https://arxiv.org/abs/", "") }}</a
     >.</span
 >

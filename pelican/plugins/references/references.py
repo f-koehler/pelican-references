@@ -7,6 +7,8 @@ import re
 import subprocess
 from typing import Any
 
+import jinja2
+
 from pelican import ArticlesGenerator, PagesGenerator, signals
 from pelican.contents import Article, Page
 import pelican.generators
@@ -16,6 +18,13 @@ LOGGER = logging.getLogger(__name__)
 BibliographyData = dict[str, Any]
 
 REGEX_CITATION = re.compile(r"\[\s*\@([\w\d]+)\s*\]", re.MULTILINE)
+
+ENV_BIBSTYLES = jinja2.Environment(
+    loader=jinja2.PackageLoader("pelican.plugins.references", "bibstyles"),
+)
+ENV_CITESTYLES = jinja2.Environment(
+    loader=jinja2.PackageLoader("pelican.plugins.references", "citestyles"),
+)
 
 
 def guess_bibformat(extension: str) -> str:
@@ -109,24 +118,12 @@ def replace_citations(
     citations: list[Citation],
     reference_numbers: dict[str, int],
 ):
+    template = ENV_CITESTYLES.get_template("numeric/inline.html")
+
     for citation in reversed(citations):
-        replacement = (
-            "<sup>["
-            + ",".join(
-                [
-                    '<a href="#reference'
-                    + str(reference_numbers[key])
-                    + '">'
-                    + str(reference_numbers[key])
-                    + "</a>"
-                    for key in citation.citekeys
-                ]
-            )
-            + "]</sup>"
-        )
         content._content = (
             content._content[: citation.start]
-            + replacement
+            + template.render(citation=citation, reference_numbers=reference_numbers)
             + content._content[citation.end :]
         )
 
@@ -147,6 +144,18 @@ def process_content(content: Article | Page):
     reference_numbers = generate_reference_numbers(citations)
 
     replace_citations(content, citations, reference_numbers)
+
+    template = ENV_CITESTYLES.get_template("numeric/bibliography.html")
+    labels = {
+        citekey: template.render(citekey=citekey, reference_numbers=reference_numbers)
+        for citekey in reference_numbers
+    }
+
+    bib = ENV_BIBSTYLES.get_template("default/main.html").render(
+        bibliography=bibliography, reference_numbers=reference_numbers, labels=labels
+    )
+
+    content._content += bib
 
 
 class ReferencesProcessor:

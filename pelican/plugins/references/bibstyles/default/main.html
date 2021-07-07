@@ -1,3 +1,13 @@
-{% for entry in bibliography %} {% if entry.get("type") == "article-journal"}
-<p>{% include "types/journal-article.html" %}</p>
-{% endif %} {% endfor %}
+<!-- prettier-ignore -->
+<div>
+  {% for entry in bibliography %}
+    {% if entry["id"] in reference_numbers %}
+      <p>
+      {{ labels[entry["id"]] }}
+      {% if entry.get("type") == "article-journal" %}
+        {% include "default/types/journal-article.html" %}
+      {% endif %}
+      </p>
+    {% endif %}
+  {% endfor %}
+</div>
