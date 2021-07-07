@@ -1,8 +1,9 @@
-{% if "author" in entry %}{% include "default/blocks/authors.html" %}.{% endif
-%} {% include "default/blocks/title.html" %}.
-<span>
-    In: <span>{{ entry["container-title"] }} </span
-    ><span>{{ entry["volume"] }}</span>.<span>{{ entry["issue"] }}</span>
-    {% if "page" in entry %}{% include "default/blocks/pages.html" %}{% endif %}
-</span>
-{% include "default/blocks/identifiers.html" %}
+<!-- prettier-ignore -->
+<p>
+  {%- if "author" in entry -%}
+    {%- include "default/blocks/authors.html" -%}.
+  {%- endif -%}
+  {%- include "default/blocks/title.html" -%}.
+  {%- include "default/blocks/journal.html" -%}.
+  {%- include "default/blocks/identifiers.html" -%}
+</p>
