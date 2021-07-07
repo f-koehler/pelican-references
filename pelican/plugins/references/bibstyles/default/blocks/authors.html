@@ -1,0 +1,10 @@
+<span>
+    {% set author = entry["author"] %} {% if author|length == 1 %} {{
+    author[0]["given"] }} {{ author[0]["family"] }} {% elif author|length == 2
+    %} {{ author[0]["given"] }} {{ author[0]["family"] }} and {{
+    author[1]["given"] }} {{ author[1]["family"] }} {% elif author|length == 3
+    %} {{ author[0]["given"] }} {{ author[0]["family"] }}, {{ author[1]["given"]
+    }} {{ author[1]["family"] }}, and {{ author[2]["given"] }} {{
+    author[2]["family"] }} {% else %} {{ author[0]["given"] }} {{
+    author[0]["family"] }} et al. {% endif %}
+</span>

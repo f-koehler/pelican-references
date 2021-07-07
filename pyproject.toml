@@ -31,6 +31,7 @@ pelican = ">=4.5"
 markdown = { version=">=3.2", optional=true }
 pybtex = "^0.24.0"
 pre-commit = "^2.13.0"
+Jinja2 = "^3.0.1"
 
 [tool.poetry.dev-dependencies]
 black = { version="^21.5b0", allow-prereleases=true }
@@ -45,6 +46,7 @@ pytest-cov = "^2.8"
 pytest-pythonpath = "^0.7"
 pytest-sugar = "^0.9"
 Werkzeug = "^2.0"
+mypy = "^0.910"
 
 [tool.poetry.extras]
 markdown = ["markdown"]

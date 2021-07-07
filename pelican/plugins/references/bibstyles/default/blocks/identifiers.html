@@ -1,0 +1,22 @@
+{% if "DOI" in entry %}
+<span
+    >DOI:
+    <a href="https://dx.doi.org/{{ entry['DOI'] }}">{{ entry["DOI"] }}</a
+    >.</span
+>
+{% endif %} {% if "ISSN" in entry %}
+<span
+    >ISSN:
+    <a href="https://portal.issn.org/resource/ISSN/{{ entry['ISSN'] }}"
+        >{{ entry["ISSN"] }}</a
+    >.</span
+>
+{% endif %} {% if "URL" in entry %} {% if
+entry["URL"].startswith("https://arxiv.org/abs/") %}
+<span
+    >arXiv:
+    <a href="entry['URL']"
+        >{{ entry["URL"]|replace("https://arxiv.org/abs/", "") }}</a
+    >.</span
+>
+{% endif %} {% endif %}

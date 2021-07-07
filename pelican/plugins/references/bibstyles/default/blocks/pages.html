@@ -1,0 +1,6 @@
+{% set page = entry["page"] %}
+<span>
+    {% if "-" in page %}pp. {{ page|replace("-", "&ndash;") }}{% elif "--" in
+    page %}pp. {{ page|replace("--", "&ndash;") }}{% else %}p. {{ page }}{%
+    endif %}
+</span>
