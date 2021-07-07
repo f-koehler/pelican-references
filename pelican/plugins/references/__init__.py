@@ -1,1 +1,1 @@
-from .bibliography import *  # NOQA
+from .references import *  # NOQA

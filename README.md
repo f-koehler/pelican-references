@@ -1,8 +1,8 @@
-# bibliography: A Plugin for Pelican
+# references: A Plugin for Pelican
 
-[![Build Status](https://img.shields.io/github/workflow/status/pelican-plugins/bibliography/build)](https://github.com/f-koehler/pelican-bibliography/actions)
-[![PyPI Version](https://img.shields.io/pypi/v/pelican-bibliography)](https://pypi.org/project/pelican-bibliography/)
-![License](https://img.shields.io/pypi/l/pelican-bibliography?color=blue)
+[![Build Status](https://img.shields.io/github/workflow/status/pelican-plugins/references/build)](https://github.com/f-koehler/pelican-references/actions)
+[![PyPI Version](https://img.shields.io/pypi/v/pelican-references)](https://pypi.org/project/pelican-references/)
+![License](https://img.shields.io/pypi/l/pelican-references?color=blue)
 
 Generate bibliographies from BibTeX files
 
@@ -10,7 +10,7 @@ Generate bibliographies from BibTeX files
 
 This plugin can be installed via:
 
-    python -m pip install pelican-bibliography
+    python -m pip install pelican-references
 
 ## Usage
 
@@ -22,7 +22,7 @@ Contributions are welcome and much appreciated. Every little bit helps. You can 
 
 To start contributing to this plugin, review the [Contributing to Pelican][] documentation, beginning with the **Contributing Code** section.
 
-[existing issues]: https://github.com/f-koehler/pelican-bibliography/issues
+[existing issues]: https://github.com/f-koehler/pelican-references/issues
 [contributing to pelican]: https://docs.getpelican.com/en/latest/contribute.html
 
 ## License
