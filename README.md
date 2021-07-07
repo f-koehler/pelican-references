@@ -1,6 +1,6 @@
 # references: A Plugin for Pelican
 
-[![Build Status](https://img.shields.io/github/workflow/status/pelican-plugins/references/build)](https://github.com/f-koehler/pelican-references/actions)
+[![Build Status](https://img.shields.io/github/workflow/status/f-koehler/pelican-references/build)](https://github.com/f-koehler/pelican-references/actions)
 [![PyPI Version](https://img.shields.io/pypi/v/pelican-references)](https://pypi.org/project/pelican-references/)
 ![License](https://img.shields.io/pypi/l/pelican-references?color=blue)
 
