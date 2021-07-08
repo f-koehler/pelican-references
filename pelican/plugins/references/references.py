@@ -123,7 +123,9 @@ def replace_citations(
     for citation in reversed(citations):
         content._content = (
             content._content[: citation.start]
-            + template.render(citation=citation, reference_numbers=reference_numbers)
+            + template.render(
+                citation=citation, reference_numbers=reference_numbers
+            ).strip()
             + content._content[citation.end :]
         )
 

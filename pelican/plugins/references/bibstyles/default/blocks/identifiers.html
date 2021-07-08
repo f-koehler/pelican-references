@@ -1,11 +1,11 @@
 {% if "DOI" in entry %}
-<span
+<span class="bibliography-identifier"
     >DOI:
     <a href="https://dx.doi.org/{{ entry['DOI'] }}">{{ entry["DOI"] }}</a
     >.</span
 >
 {% endif %} {% if "ISSN" in entry %}
-<span
+<span class="bibliography-identifier"
     >ISSN:
     <a href="https://portal.issn.org/resource/ISSN/{{ entry['ISSN'] }}"
         >{{ entry["ISSN"] }}</a
@@ -13,7 +13,7 @@
 >
 {% endif %} {% if "URL" in entry %} {% if
 entry["URL"].startswith("https://arxiv.org/abs/") %}
-<span
+<span class="bibliography-identifier"
     >arXiv:
     <a href="{{ entry['URL'] }}"
         >{{ entry["URL"]|replace("https://arxiv.org/abs/", "") }}</a
