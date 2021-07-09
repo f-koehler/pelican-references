@@ -19,7 +19,7 @@ register_plugin("pybtex.style.labels", "number_brackets", number_brackets.LabelS
 
 LOGGER = logging.getLogger(__name__)
 
-REGEX_CITATION = re.compile(r"\[\s*\@([\w\d]+)\s*\]", re.MULTILINE)
+REGEX_CITATION = re.compile(r"\[@([\w\d]+)\]", re.MULTILINE)
 
 
 def read_bibliography(content: Article | Page) -> str:
