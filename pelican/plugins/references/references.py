@@ -115,6 +115,27 @@ def find_citations(content: Article | Page) -> list[Citation]:
     return citations
 
 
+def inline_label_fallback(
+    citekeys: list[str], bibliography: FormattedBibliography
+) -> str:
+    labels: list[str] = []
+    indices: list[int] = []
+
+    for citekey in citekeys:
+        for index, entry in enumerate(bibliography.entries):
+            if entry.key == citekey:
+                labels.append(entry.label)
+                indices.append(index)
+                break
+        else:
+            raise KeyError(citekey)
+    links = [
+        f'<a href="#reference{index+1}">{label}</a>'
+        for index, label in zip(indices, labels)
+    ]
+    return "<sup>" + ", ".join(links) + "</sup>"
+
+
 def replace_citations(
     content: Article | Page,
     citations: list[Citation],
@@ -123,9 +144,13 @@ def replace_citations(
 ):
     label_plugin = find_plugin("pybtex.style.labels", label_style)()
     for citation in reversed(citations):
+        try:
+            label = label_plugin.inline_label(citation.citekeys, formatted_bibliography)
+        except AttributeError:
+            label = inline_label_fallback(citation.citekeys, formatted_bibliography)
         content._content = (
             content._content[: citation.start]
-            + label_plugin.inline_label(citation.citekeys, formatted_bibliography)
+            + label
             + content._content[citation.end :]
         )
 
