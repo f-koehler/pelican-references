@@ -32,6 +32,7 @@ markdown = { version=">=3.2", optional=true }
 pybtex = "^0.24.0"
 pre-commit = "^2.13.0"
 Jinja2 = "^3.0.1"
+beautifulsoup4 = "^4.9.3"
 
 [tool.poetry.dev-dependencies]
 black = { version="^21.5b0", allow-prereleases=true }

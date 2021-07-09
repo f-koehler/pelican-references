@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import subprocess
 
+from bs4 import BeautifulSoup
 import jinja2
 
 from pelican import ArticlesGenerator, PagesGenerator, signals
@@ -73,7 +74,14 @@ def render_bibliography(
     formatted_bibliography = style.format_bibliography(bib_data, citations)
 
     backend = Backend()
-    return backend.write_to_file(formatted_bibliography, io.StringIO())
+    html = backend.write_to_file(formatted_bibliography, io.StringIO())
+
+    # add ids for each reference
+    soup = BeautifulSoup(html, "html.parser")
+    for index, tag in enumerate(soup.find_all("dt")):
+        tag["id"] = f"reference{index+1}"
+
+    return str(soup)
 
 
 class Citation:
