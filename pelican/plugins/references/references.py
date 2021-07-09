@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 import re
 import subprocess
-from typing import Any
+from typing import Any, Dict
 
 import jinja2
 
@@ -15,7 +15,7 @@ import pelican.generators
 
 LOGGER = logging.getLogger(__name__)
 
-BibliographyData = dict[str, Any]
+BibliographyData = Dict[str, Any]
 
 REGEX_CITATION = re.compile(r"\[\s*\@([\w\d]+)\s*\]", re.MULTILINE)
 
