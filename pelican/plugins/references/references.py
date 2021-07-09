@@ -7,19 +7,19 @@ import re
 import subprocess
 
 from bs4 import BeautifulSoup
-import jinja2
+from pybtex.plugin import find_plugin, register_plugin
+from pybtex.style import FormattedBibliography
 
 from pelican import ArticlesGenerator, PagesGenerator, signals
 from pelican.contents import Article, Page
 import pelican.generators
+from pelican.plugins.references.labels import number_brackets
+
+register_plugin("pybtex.style.labels", "number_brackets", number_brackets.LabelStyle)
 
 LOGGER = logging.getLogger(__name__)
 
 REGEX_CITATION = re.compile(r"\[\s*\@([\w\d]+)\s*\]", re.MULTILINE)
-
-ENV_CITESTYLES = jinja2.Environment(
-    loader=jinja2.PackageLoader("pelican.plugins.references", "citestyles"),
-)
 
 
 def read_bibliography(content: Article | Page) -> str:
@@ -52,15 +52,14 @@ def read_bibliography(content: Article | Page) -> str:
     return bibcontent
 
 
-def render_bibliography(
+def format_bibliography(
     bibliography: str,
     citations: list[str],
     bibliography_style: str = "unsrt",
-    label_style: str = "number",
+    label_style: str = "number_brackets",
     name_style: str = "plain",
     sorting_style: str = "none",
-):
-    from pybtex.backends.html import Backend
+) -> FormattedBibliography:
     from pybtex.database.input.bibtex import Parser
     from pybtex.plugin import find_plugin
     from pybtex.style.formatting import BaseStyle
@@ -68,10 +67,16 @@ def render_bibliography(
     bib_data = Parser(wanted_entries=citations).parse_string(bibliography)
 
     style: BaseStyle = find_plugin("pybtex.style.formatting", bibliography_style)(
-        label_style=label_style, sorting_style=sorting_style, name_style=name_style
+        label_style=label_style,
+        sorting_style=sorting_style,
+        name_style=name_style,
     )
 
-    formatted_bibliography = style.format_bibliography(bib_data, citations)
+    return style.format_bibliography(bib_data, citations)
+
+
+def render_bibliography(formatted_bibliography: FormattedBibliography) -> str:
+    from pybtex.backends.html import Backend
 
     backend = Backend()
     html = backend.write_to_file(formatted_bibliography, io.StringIO())
@@ -110,33 +115,17 @@ def find_citations(content: Article | Page) -> list[Citation]:
     return citations
 
 
-def generate_reference_numbers(citations: list[Citation]) -> dict[str, int]:
-    counter = 1
-    mapping: dict[str, int] = {}
-    for citation in citations:
-        for citekey in citation.citekeys:
-            if citekey in mapping:
-                continue
-
-            mapping[citekey] = counter
-            counter += 1
-
-    return mapping
-
-
 def replace_citations(
     content: Article | Page,
     citations: list[Citation],
-    reference_numbers: dict[str, int],
+    formatted_bibliography: FormattedBibliography,
+    label_style: str = "number_brackets",
 ):
-    template = ENV_CITESTYLES.get_template("numeric/inline.html")
-
+    label_plugin = find_plugin("pybtex.style.labels", label_style)()
     for citation in reversed(citations):
         content._content = (
             content._content[: citation.start]
-            + template.render(
-                citation=citation, reference_numbers=reference_numbers
-            ).strip()
+            + label_plugin.inline_label(citation.citekeys, formatted_bibliography)
             + content._content[citation.end :]
         )
 
@@ -160,13 +149,12 @@ def process_content(content: Article | Page):
             if citekey not in citekeys:
                 citekeys.append(citekey)
 
-    reference_numbers = generate_reference_numbers(citations)
+    formatted_bib = format_bibliography(bibliography, citekeys)
+    rendered_bib = render_bibliography(formatted_bib)
 
-    replace_citations(content, citations, reference_numbers)
+    replace_citations(content, citations, formatted_bib)
 
-    rendered = render_bibliography(bibliography, citekeys)
-
-    content._content += rendered
+    content._content += rendered_bib
 
 
 class ReferencesProcessor:

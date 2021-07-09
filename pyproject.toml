@@ -31,7 +31,6 @@ pelican = ">=4.5"
 markdown = { version=">=3.2", optional=true }
 pybtex = "^0.24.0"
 pre-commit = "^2.13.0"
-Jinja2 = "^3.0.1"
 beautifulsoup4 = "^4.9.3"
 
 [tool.poetry.dev-dependencies]
@@ -51,6 +50,9 @@ mypy = "^0.910"
 
 [tool.poetry.extras]
 markdown = ["markdown"]
+
+[tool.poetry.plugins."pybtex.style.labels"]
+"pybtex.style.labels.number_brackets" = "pelican.plugins.references.labels.number_brackets:LabelStyle"
 
 [tool.autopub]
 project-name = "references"
