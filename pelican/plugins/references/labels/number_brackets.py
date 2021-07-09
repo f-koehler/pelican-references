@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pybtex.style import FormattedBibliography, FormattedEntry
 from pybtex.style.labels import BaseLabelStyle
 
