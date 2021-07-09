@@ -1,9 +1,0 @@
-<!-- prettier-ignore -->
-<span>
-    In: <span class="journal-name">{{ entry["container-title"] }}</span>
-    <span class="journal-volume"> {{ entry["volume"] }}</span>
-    {%- if "issue" in entry -%}.<span class="journal-issue">{{ entry["issue"] }}</span>{%- endif -%}
-    {%- if "page" in entry -%}
-      <span>, </span>{%- include "default/blocks/pages.html" -%}
-    {%- endif -%}
-</span>

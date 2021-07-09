@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import json
+import io
 import logging
 from pathlib import Path
 import re
 import subprocess
-from typing import Any, Dict
 
 import jinja2
 
@@ -15,27 +14,66 @@ import pelican.generators
 
 LOGGER = logging.getLogger(__name__)
 
-BibliographyData = Dict[str, Any]
-
 REGEX_CITATION = re.compile(r"\[\s*\@([\w\d]+)\s*\]", re.MULTILINE)
 
-ENV_BIBSTYLES = jinja2.Environment(
-    loader=jinja2.PackageLoader("pelican.plugins.references", "bibstyles"),
-)
 ENV_CITESTYLES = jinja2.Environment(
     loader=jinja2.PackageLoader("pelican.plugins.references", "citestyles"),
 )
 
 
-def guess_bibformat(extension: str) -> str:
-    if extension.lower().lstrip(".") == "bib":
-        return "biblatex"
-    elif extension.lower().lstrip(".") == "json":
-        return "csljson"
-    else:
-        raise RuntimeError(
-            f"Failed to guess bibliography format for extension: {extension}"
+def read_bibliography(content: Article | Page) -> str:
+    if "bibliography" not in content.metadata:
+        return ""
+
+    path = Path(content.source_path).parent / content.metadata["bibliography"]
+    if not path.exists():
+        LOGGER.error(f"bibliography file does not exist: {path}")
+        return ""
+
+    with open(path) as fptr:
+        bibcontent = fptr.read()
+
+    if path.suffix.lower().lstrip().strip() == "json":
+        bibcontent = (
+            subprocess.check_output(
+                [
+                    "pandoc",
+                    "--from=csljson",
+                    "--to=bibtex",
+                    "--output=-",
+                ],
+                input=bibcontent.encode(),
+            )
+            .decode()
+            .strip()
         )
+
+    return bibcontent
+
+
+def render_bibliography(
+    bibliography: str,
+    citations: list[str],
+    bibliography_style: str = "unsrt",
+    label_style: str = "number",
+    name_style: str = "plain",
+    sorting_style: str = "none",
+):
+    from pybtex.backends.html import Backend
+    from pybtex.database.input.bibtex import Parser
+    from pybtex.plugin import find_plugin
+    from pybtex.style.formatting import BaseStyle
+
+    bib_data = Parser(wanted_entries=citations).parse_string(bibliography)
+
+    style: BaseStyle = find_plugin("pybtex.style.formatting", bibliography_style)(
+        label_style=label_style, sorting_style=sorting_style, name_style=name_style
+    )
+
+    formatted_bibliography = style.format_bibliography(bib_data, citations)
+
+    backend = Backend()
+    return backend.write_to_file(formatted_bibliography, io.StringIO())
 
 
 class Citation:
@@ -46,41 +84,6 @@ class Citation:
 
     def __str__(self) -> str:
         return str({"start": self.start, "end": self.end, "citekeys": self.citekeys})
-
-
-def get_bibliography(content: Article | Page) -> BibliographyData | None:
-    if "bibliography" not in content.metadata:
-        return None
-
-    path = Path(content.source_path).parent / content.metadata["bibliography"]
-    if not path.exists():
-        LOGGER.error(f"bibliography file does not exist: {path}")
-        return None
-
-    if "bibliographyformat" in content.metadata:
-        bibformat = content.metadata["bibliographyformat"].lower()
-    else:
-        bibformat = guess_bibformat(path.suffix)
-
-    with open(path) as fptr:
-        data = fptr.read()
-
-    if bibformat != "csljson":
-        data = (
-            subprocess.check_output(
-                [
-                    "pandoc",
-                    f"--from={bibformat}",
-                    "--to=csljson",
-                    "--output=-",
-                ],
-                input=data.encode(),
-            )
-            .decode()
-            .strip()
-        )
-
-    return json.loads(data)
 
 
 def find_citations(content: Article | Page) -> list[Citation]:
@@ -134,7 +137,7 @@ def process_content(content: Article | Page):
     if "bibliography" not in content.metadata:
         return
 
-    bibliography = get_bibliography(content)
+    bibliography = read_bibliography(content)
     if not bibliography:
         return
 
@@ -143,21 +146,19 @@ def process_content(content: Article | Page):
         LOGGER.warn(f"no citations in article: {content.source_path}")
         return
 
+    citekeys = []
+    for citation in citations:
+        for citekey in citation.citekeys:
+            if citekey not in citekeys:
+                citekeys.append(citekey)
+
     reference_numbers = generate_reference_numbers(citations)
 
     replace_citations(content, citations, reference_numbers)
 
-    template = ENV_CITESTYLES.get_template("numeric/bibliography.html")
-    labels = {
-        citekey: template.render(citekey=citekey, reference_numbers=reference_numbers)
-        for citekey in reference_numbers
-    }
+    rendered = render_bibliography(bibliography, citekeys)
 
-    bib = ENV_BIBSTYLES.get_template("default/main.html").render(
-        bibliography=bibliography, reference_numbers=reference_numbers, labels=labels
-    )
-
-    content._content += bib
+    content._content += rendered
 
 
 class ReferencesProcessor:
