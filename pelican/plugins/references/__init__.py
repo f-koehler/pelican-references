@@ -1,1 +1,1 @@
-from .references import *  # NOQA
+from .references import register  # noqa: F401

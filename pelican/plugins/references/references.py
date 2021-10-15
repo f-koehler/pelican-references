@@ -109,14 +109,15 @@ def find_citations(content: Article | Page) -> list[Citation]:
                 match.start(),
                 match.end(),
                 [citekey.strip().lstrip("@") for citekey in match.group(1).split(",")],
-            )
+            ),
         )
 
     return citations
 
 
 def inline_label_fallback(
-    citekeys: list[str], bibliography: FormattedBibliography
+    citekeys: list[str],
+    bibliography: FormattedBibliography,
 ) -> str:
     labels: list[str] = []
     indices: list[int] = []
@@ -165,7 +166,7 @@ def process_content(content: Article | Page):
 
     citations = find_citations(content)
     if not citations:
-        LOGGER.warn(f"no citations in article: {content.source_path}")
+        LOGGER.warning(f"no citations in article: {content.source_path}")
         return
 
     citekeys = []

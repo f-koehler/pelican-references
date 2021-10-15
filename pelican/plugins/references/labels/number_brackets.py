@@ -10,7 +10,9 @@ class LabelStyle(BaseLabelStyle):
             yield f"[{number+1}]"
 
     def inline_label(
-        self, citekeys: list[str], bibliography: FormattedBibliography
+        self,
+        citekeys: list[str],
+        bibliography: FormattedBibliography,
     ) -> str:
         stripped_labels: list[str] = []
         indices: list[int] = []
