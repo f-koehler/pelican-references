@@ -1,3 +1,5 @@
-## 0.2.1 - 2021-07-09
 
-Add inline labels using new code.
+0.2.2 - 2021-10-15
+------------------
+
+Code cleanup using an extended pre-commit config.
