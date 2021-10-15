@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/f-koehler/pelican-references/build)](https://github.com/f-koehler/pelican-references/actions)
 [![PyPI Version](https://img.shields.io/pypi/v/pelican-references)](https://pypi.org/project/pelican-references/)
 ![License](https://img.shields.io/pypi/l/pelican-references?color=blue)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/f-koehler/pelican-references/main.svg)](https://results.pre-commit.ci/latest/github/f-koehler/pelican-references/main)
 
 Generate bibliographies from BibTeX files
 
