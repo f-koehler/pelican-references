@@ -1,5 +1,5 @@
 
-0.2.2 - 2021-10-15
+0.2.3 - 2021-10-15
 ------------------
 
-Code cleanup using an extended pre-commit config.
+Test compatibility with python 3.10.
