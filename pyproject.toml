@@ -46,7 +46,7 @@ pytest-cov = "^3.0"
 pytest-pythonpath = "^0.7"
 pytest-sugar = "^0.9"
 Werkzeug = "^2.0"
-mypy = "^0.910"
+mypy = "^0.920"
 types-beautifulsoup4 = "^4.9.0"
 
 [tool.poetry.extras]
