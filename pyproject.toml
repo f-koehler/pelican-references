@@ -34,7 +34,7 @@ pre-commit = "^2.13.0"
 beautifulsoup4 = "^4.9.3"
 
 [tool.poetry.dev-dependencies]
-black = { version = "^21.5b0", allow-prereleases = true }
+black = { version = "^22.1", allow-prereleases = true }
 flake8 = "^4.0"
 flake8-black = "^0.2"
 invoke = "^1.3"
