@@ -8,7 +8,7 @@ name = "pelican-references"
 packages = [{include = "pelican"}]
 readme = "README.md"
 repository = "https://github.com/f-koehler/pelican-references"
-version = "0.3.0"
+version = "0.3.1"
 
 classifiers = [
   "Development Status :: 4 - Beta",

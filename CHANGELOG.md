@@ -1,3 +1,5 @@
-## 0.3.0 - 2022-04-08
 
-Bump required Python version to `3.10`.
+0.3.1 - 2023-06-27
+------------------
+
+Maintenance release to update dependencies.
