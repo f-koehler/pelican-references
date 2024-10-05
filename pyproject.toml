@@ -33,7 +33,7 @@ pybtex = "^0.24.0"
 python = ">=3.10,<4.0"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^3.0.0"
+pre-commit = "^4.0.0"
 Werkzeug = "^3.0.0"
 black = {version = "^24.0.0", allow-prereleases = true}
 flake8 = "^7.0.0"
